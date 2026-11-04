@@ -1,0 +1,16 @@
+# generated results (keep folder, ignore content)
+results/*
+!results/.gitkeep
+
+# MATLAB
+*.asv
+*.m~
+*.autosave
+slprj/
+*.mexw64
+*.mexa64
+*.mexmaci64
+
+# OS
+.DS_Store
+Thumbs.db
