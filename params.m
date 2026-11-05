@@ -36,29 +36,53 @@ p.terr.f_r_road = 0.015;          % rolling resistance on asphalt
 p.terr.f_r_off  = 0.06;           % (A) gravel / forest track
 p.terr.mu_off   = 0.8;            % (A) tyre-ground friction, dry off-road
 
-%% Electric motor (central motor, placeholder values)
-p.mot.T_peak = 120;               % (A) Nm
-p.mot.T_cont = 60;                % (A) Nm
-p.mot.P_peak = 50e3;              % (A) W
-p.mot.P_cont = 25e3;              % (A) W
-p.mot.n_max  = 8000;              % (A) rpm
+%% Electric motor: PMSM 20/40 kW 96 V kit (EV Evolution), incl. inverter
+% Source: ev-evolution.eu/product/pmsm-motor-20-40-kw-96v (Nov 2026, EUR 3600)
+p.mot.name   = 'PMSM 20/40 kW 96V (EV Evolution)';
+p.mot.T_peak = 210;               % Nm
+p.mot.T_cont = 59;                % Nm rated
+p.mot.P_peak = 40e3;              % W
+p.mot.P_cont = 20e3;              % W
+p.mot.n_max  = 7000;              % rpm
+p.mot.U_max  = 120;               % V max. DC input of the inverter
+p.mot.mass   = 38;                % kg, water-cooled, IP67
 
 %% Driveline: bevel stage -> 2-speed planetary -> axle diffs (with lockers)
 % Low gear: sun in, ring fixed, carrier out -> i = 1 + z_ring/z_sun
 % High gear: planetary locked              -> i = 1
-p.dl.z_sun     = 24;
-p.dl.z_ring    = 60;
+p.dl.z_sun     = 30;              % i_planet = 1 + 66/30 = 3.2
+p.dl.z_ring    = 66;
 p.dl.n_planets = 3;
 p.dl.i_bevel   = 2.0;             % (A)
 p.dl.i_axle    = 5.5;             % (A) axle drive incl. hub reduction
 p.dl.eta       = 0.90;            % (A) total mechanical efficiency
 
-%% Battery
-p.bat.E_nom_kWh = 30;             % kWh nominal
-p.bat.U_nom     = 102;            % V
+%% Battery cell: EVE LF280K (LFP, prismatic)
+% Source: eu.nkon.nl (Nov 2026, approx. EUR 72-78 per cell incl. VAT)
+p.cell.name   = 'EVE LF280K';
+p.cell.U_nom  = 3.2;              % V
+p.cell.U_max  = 3.65;             % V charge end
+p.cell.U_min  = 2.8;              % V cut-off used in operation (datasheet 2.5)
+p.cell.C_Ah   = 280;              % Ah
+p.cell.I_cont = 280;              % A (1C)
+p.cell.mass   = 5.45;             % kg
+p.cell.dim    = [72 173.7 207.5]; % mm thickness x width x height
+p.cell.price  = 75;               % EUR per cell (approx.)
+
+%% Battery pack: 30s1p (keeps full-charge voltage below inverter limit)
+p.pack.ns       = 30;             % cells in series
+p.pack.np       = 1;              % cells in parallel
+p.pack.rows     = 2;              % cell rows side by side
+p.pack.f_mass   = 1.20;           % (A) pack mass / cell mass (BMS, busbars, housing)
+p.pack.gap      = 1.0;            % (A) mm gap between cells (insulation)
+p.pack.endplate = 15;             % (A) mm compression end plate thickness
+p.pack.margin   = 25;             % (A) mm housing wall + space around cells
+
+p.bat.E_nom_kWh = p.pack.ns*p.pack.np*p.cell.U_nom*p.cell.C_Ah/1000;  % kWh
+p.bat.U_nom     = p.pack.ns*p.cell.U_nom;                              % V
 p.bat.DoD       = 0.90;           % usable share
 p.bat.eta       = 0.95;           % charge/discharge efficiency
-p.bat.e_spec    = 0.16;           % (A) kWh/kg on pack level
+p.bat.e_spec    = p.cell.U_nom*p.cell.C_Ah/1000 / (p.cell.mass*p.pack.f_mass); % kWh/kg
 
 %% Daily off-road cycle
 p.cyc.v_avg     = 20/3.6;         % (A) m/s average speed
@@ -84,11 +108,12 @@ p.rex.rho_fuel = 0.745;           % kg/L petrol
 % Load collective (duty cycle). One row per load case:
 %   [time share, motor torque / T_peak, motor speed in rpm, gear (1=low, 2=high)]
 % Shares must add up to 1. Motor torque must lie below the motor curve.
-p.gb.lc = [ 0.02  1.00  1000  1     % max. gradient, crawling
-            0.10  0.60  2500  1     % steep off-road
-            0.38  0.30  4000  1     % normal off-road
-            0.40  0.20  6000  2     % road, constant speed
-            0.10  0.80  3500  2 ];  % road, acceleration / hills
+% Check: torque * speed must stay below P_peak (40 kW), long cases below P_cont.
+p.gb.lc = [ 0.02  1.00  1000  1     % max. gradient, crawling       (22 kW)
+            0.10  0.60  2500  1     % steep off-road                (33 kW)
+            0.38  0.20  4000  1     % normal off-road               (18 kW)
+            0.40  0.12  6000  2     % road, constant speed          (16 kW)
+            0.10  0.50  3500  2 ];  % road, acceleration / hills    (38 kW)
 p.gb.lc_names = {'Max grade', 'Steep off-road', 'Off-road', 'Road cruise', 'Road accel'};
 p.gb.L_h      = 3000;             % (A) design life in operating hours
 
@@ -102,12 +127,12 @@ p.gb.axle_share_max = 1.0;        % worst case: all torque to one axle (lockers)
 % Bevel stage (90 deg, motor transverse). Values at mean cone diameter.
 p.gb.bev.z1 = 17;                 % pinion (motor)
 p.gb.bev.z2 = 34;                 % wheel  -> i = z2/z1 should match p.dl.i_bevel
-p.gb.bev.m  = 3.0;                % mm mean normal module
-p.gb.bev.b  = 20;                 % mm face width (keep b/R_e <= 0.3)
+p.gb.bev.m  = 3.5;                % mm mean normal module (210 Nm motor)
+p.gb.bev.b  = 23;                 % mm face width (keep b/R_e <= 0.3)
 
 % Planetary set (uses p.dl.z_sun, p.dl.z_ring, p.dl.n_planets)
-p.gb.pl.m   = 2.5;                % mm module
-p.gb.pl.b   = 25;                 % mm face width
+p.gb.pl.m   = 3.0;                % mm module (also gives room for planet bearing)
+p.gb.pl.b   = 30;                 % mm face width
 
 % Tooth geometry (reference profile DIN 867 / ISO 53, no profile shift)
 p.gb.alpha    = 20;               % deg pressure angle

@@ -14,6 +14,7 @@ dl = gearRatios(p);              % driveline ratios
 tr = tractionAnalysis(p, dl);    % grade, top speed, adhesion, tipping
 en = energyBalance(p);           % daily energy demand
 so = solarYield(p);              % solar yield
+bp = batteryPack(p);             % pack layout, voltage, currents, mass
 
 E_missing = max(en.total_kWh - en.usable_kWh - so.E_day_kWh, 0);
 rx = rangeExtender(p, en, E_missing);
@@ -27,6 +28,7 @@ fprintf('Missing after battery + solar: %.1f kWh -> REX %.1f h, %.1f L petrol\n'
 fprintf('Extra range per tank: %.0f km\n', rx.range_tank_km);
 
 T = checkRequirements(p, dl, tr, en, so);
+printBattery(p, bp);
 
 %% Gearbox
 gl = gearboxLoads(p, dl);        % torques and speeds per load case
@@ -47,7 +49,7 @@ f2 = plotEnergyBalance(en, so);
 saveas(f2, fullfile(resDir, 'energy_balance.png'));
 
 save(fullfile(resDir, 'results.mat'), 'p', 'dl', 'tr', 'en', 'so', 'rx', 'T', ...
-     'gl', 'gs', 'sh', 'br', 'gg');
+     'gl', 'gs', 'sh', 'br', 'gg', 'bp');
 writetable(gg.spur,  fullfile(resDir, 'gear_geometry_planetary.csv'));
 writetable(gg.bevel, fullfile(resDir, 'gear_geometry_bevel.csv'));
 writetable(T, fullfile(resDir, 'requirements_check.csv'));
