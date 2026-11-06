@@ -20,14 +20,17 @@ p.g       = 9.81;                 % m/s^2
 p.rho_air = 1.2;                  % kg/m^3
 
 %% Vehicle
-p.veh.m_empty   = 1000;           % (A) kg, incl. battery
+% Layout: motor + gearbox at the front under the cab, propshaft to the rear
+% axle in a tunnel between the two battery boxes under the load bed.
+p.veh.m_empty   = 1200;           % (A) kg, incl. 30s2p battery (~390 kg)
 p.veh.m         = p.veh.m_empty + p.req.payload;   % kg, fully loaded
 p.veh.cw        = 0.8;            % (A) drag coefficient
 p.veh.A         = 2.5;            % (A) m^2 frontal area
 p.veh.r_dyn     = 0.35;           % (A) m dynamic tyre radius
-p.veh.wheelbase = 1.80;           % (A) m
+p.veh.wheelbase = 1.90;           % (A) m, battery boxes must fit in front of rear axle
 p.veh.h_cg      = 0.75;           % (A) m centre of gravity height
-p.veh.load_front = 0.50;          % (A) static share of weight on front axle
+p.veh.load_front = 0.45;          % (A) static share of weight on front axle
+p.veh.L_batt_space = 1.25;        % (A) m free length between gearbox and rear axle housing
 p.veh.width     = 1.45;           % (A) m
 p.veh.clearance = 0.32;           % (A) m
 
@@ -69,10 +72,15 @@ p.cell.mass   = 5.45;             % kg
 p.cell.dim    = [72 173.7 207.5]; % mm thickness x width x height
 p.cell.price  = 75;               % EUR per cell (approx.)
 
-%% Battery pack: 30s1p (keeps full-charge voltage below inverter limit)
-p.pack.ns       = 30;             % cells in series
-p.pack.np       = 1;              % cells in parallel
-p.pack.rows     = 2;              % cell rows side by side
+%% Battery pack: 30s2p = ONE battery, one BMS, one main contactor
+% 2 cells in parallel form a cell group, 30 groups in series.
+% Split into 2 boxes left/right of the propshaft tunnel under the load bed:
+% box 1 = groups 1-15, box 2 = groups 16-30, connected in series by one
+% cable with a service disconnect. Each box alone is 48 V (< 60 V touch-safe).
+p.pack.ns       = 30;             % cell groups in series (30s keeps U_max < 120 V)
+p.pack.np       = 2;              % cells in parallel per group
+p.pack.n_boxes  = 2;              % housings, connected in series
+p.pack.tunnel   = 250;            % (A) mm tunnel width between boxes (central tube + shaft)
 p.pack.f_mass   = 1.20;           % (A) pack mass / cell mass (BMS, busbars, housing)
 p.pack.gap      = 1.0;            % (A) mm gap between cells (insulation)
 p.pack.endplate = 15;             % (A) mm compression end plate thickness
