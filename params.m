@@ -22,17 +22,17 @@ p.rho_air = 1.2;                  % kg/m^3
 %% Vehicle
 % Layout: motor + gearbox at the front under the cab, propshaft to the rear
 % axle in a tunnel between the two battery boxes under the load bed.
-p.veh.m_empty   = 1200;           % (A) kg, incl. 30s2p battery (~390 kg)
+p.veh.m_empty   = 1200;           % fallback only, main.m overwrites it from data/mass_budget.csv
 p.veh.m         = p.veh.m_empty + p.req.payload;   % kg, fully loaded
 p.veh.cw        = 0.8;            % (A) drag coefficient
 p.veh.A         = 2.5;            % (A) m^2 frontal area
-p.veh.r_dyn     = 0.35;           % (A) m dynamic tyre radius
+p.veh.r_dyn     = 0.38;           % m dynamic tyre radius, 31x10.5R15 class (approx. 790 mm diameter)
 p.veh.wheelbase = 1.90;           % (A) m, battery boxes must fit in front of rear axle
-p.veh.h_cg      = 0.75;           % (A) m centre of gravity height
-p.veh.load_front = 0.45;          % (A) static share of weight on front axle
+p.veh.h_cg      = 0.75;           % fallback, overwritten by massBudget (loaded CG height)
+p.veh.load_front = 0.45;          % fallback, overwritten by massBudget (loaded)
 p.veh.L_batt_space = 1.25;        % (A) m free length between gearbox and rear axle housing
 p.veh.width     = 1.45;           % (A) m
-p.veh.clearance = 0.32;           % (A) m
+p.veh.clearance = 0.35;           % (A) m, bigger tyres + portal hubs
 
 %% Terrain
 p.terr.f_r_road = 0.015;          % rolling resistance on asphalt

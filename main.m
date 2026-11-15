@@ -8,6 +8,7 @@ addpath(fullfile(root, 'src'), fullfile(root, 'src', 'gearbox'), fullfile(root, 
 
 %% Inputs
 p = params();
+[p, mb] = massBudget(p);    % mass, CG and axle loads from data/*.csv
 
 %% Calculations
 dl = gearRatios(p);              % driveline ratios
@@ -29,6 +30,7 @@ fprintf('Extra range per tank: %.0f km\n', rx.range_tank_km);
 
 T = checkRequirements(p, dl, tr, en, so);
 printBattery(p, bp);
+printMassBudget(p, mb);
 
 %% Gearbox
 gl = gearboxLoads(p, dl);        % torques and speeds per load case
@@ -47,9 +49,11 @@ f1 = plotTractionDiagram(p, dl);
 saveas(f1, fullfile(resDir, 'traction_diagram.png'));
 f2 = plotEnergyBalance(en, so);
 saveas(f2, fullfile(resDir, 'energy_balance.png'));
+f3 = plotMassBudget(p, mb);
+saveas(f3, fullfile(resDir, 'mass_budget.png'));
 
 save(fullfile(resDir, 'results.mat'), 'p', 'dl', 'tr', 'en', 'so', 'rx', 'T', ...
-     'gl', 'gs', 'sh', 'br', 'gg', 'bp');
+     'gl', 'gs', 'sh', 'br', 'gg', 'bp', 'mb');
 writetable(gg.spur,  fullfile(resDir, 'gear_geometry_planetary.csv'));
 writetable(gg.bevel, fullfile(resDir, 'gear_geometry_bevel.csv'));
 writetable(T, fullfile(resDir, 'requirements_check.csv'));

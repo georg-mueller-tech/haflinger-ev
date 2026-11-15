@@ -1,0 +1,4 @@
+component,mass_kg,x_m,z_m
+Driver,85,0.70,1.00
+Passenger,85,0.70,1.00
+Cargo on load bed,330,1.55,1.00

@@ -1,0 +1,33 @@
+group,component,qty,mass_each_kg,x_m,z_m,source
+Chassis,Wheel with 31x10.5R15 tyre (front),2,25,0.00,0.38,estimate
+Chassis,Wheel with 31x10.5R15 tyre (rear),2,25,1.90,0.38,estimate
+Chassis,Portal hub i 1.83 incl. brake (front),2,18,0.00,0.42,estimate
+Chassis,Portal hub i 1.83 incl. brake (rear),2,18,1.90,0.42,estimate
+Chassis,Axle housing + locking diff (front),1,45,0.00,0.48,estimate
+Chassis,Axle housing + locking diff (rear),1,45,1.90,0.48,estimate
+Chassis,Springs + dampers (front),2,6,0.00,0.60,estimate
+Chassis,Springs + dampers (rear),2,6,1.90,0.60,estimate
+Chassis,Central tube frame + crossmembers,1,120,0.95,0.50,estimate
+Chassis,Steering,1,12,0.10,0.70,estimate
+Drivetrain,PMSM motor 20/40 kW,1,38,0.30,0.45,datasheet
+Drivetrain,Inverter,1,8,0.55,0.60,estimate
+Drivetrain,2-speed gearbox + transfer case,1,45,0.25,0.45,estimate
+Drivetrain,Propshafts,2,6,1.00,0.45,estimate
+Drivetrain,Cooling loop (radiator + pump + coolant),1,8,-0.30,0.65,estimate
+Battery,EVE LF280K cells,60,5.42,1.25,0.47,datasheet
+Battery,Boxes + busbars + BMS + end plates,1,65,1.25,0.50,estimate
+Electrics,Onboard charger 6.6 kW,1,12,1.70,0.70,estimate
+Electrics,DC/DC + 12 V battery,1,14,-0.15,0.60,estimate
+Electrics,HV + 12 V wiring + safety parts,1,25,0.90,0.55,estimate
+Body,Cab structure + panels,1,110,0.60,1.00,estimate
+Body,Seats,2,12,0.70,0.85,estimate
+Body,Windscreen + roof,1,25,0.45,1.45,estimate
+Body,Load bed,1,40,1.60,0.80,estimate
+Body,Lights + dashboard + misc,1,15,0.30,0.95,estimate
+Solar,Semi-flexible modules 6.5 m2,1,20,1.20,0.95,estimate
+Solar,Side boxes + folding mechanism,2,20,1.20,0.80,estimate
+Solar,Boost MPPT,4,1,1.40,0.80,estimate
+Range extender,Petrol engine 627 cm3,1,42,2.10,0.70,estimate
+Range extender,Generator + inverter,1,13,2.10,0.70,estimate
+Range extender,Tank 20 L incl. fuel,1,20,1.95,0.60,estimate
+Range extender,Exhaust + catalyst,1,10,2.20,0.55,estimate
