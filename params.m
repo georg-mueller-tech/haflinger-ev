@@ -13,7 +13,7 @@ p.req.width_max     = 1.5;        % m
 p.req.clearance_min = 0.30;       % m
 p.req.solar_day_kWh = 5;          % kWh on a clear day
 p.req.cont_grade    = 0.15;       % (A) gradient for continuous-power case
-p.req.cont_speed    = 20/3.6;     % (A) m/s for continuous-power case
+p.req.cont_speed    = 17/3.6;     % m/s for continuous-power case (lowered from 20, motor limit)
 
 %% Constants
 p.g       = 9.81;                 % m/s^2
@@ -67,7 +67,8 @@ p.cell.U_nom  = 3.2;              % V
 p.cell.U_max  = 3.65;             % V charge end
 p.cell.U_min  = 2.8;              % V cut-off used in operation (datasheet 2.5)
 p.cell.C_Ah   = 280;              % Ah
-p.cell.I_cont = 280;              % A (1C)
+p.cell.I_cont = 280;              % A continuous (1C)
+p.cell.I_peak = 560;              % A peak for max. 30 s (2C, EVE datasheet)
 p.cell.mass   = 5.45;             % kg
 p.cell.dim    = [72 173.7 207.5]; % mm thickness x width x height
 p.cell.price  = 75;               % EUR per cell (approx.)
@@ -100,7 +101,7 @@ p.cyc.eta_el    = 0.85;           % (A) motor + inverter efficiency
 p.cyc.P_aux     = 300;            % (A) W lights, cooling, electronics
 
 %% Solar (foldable panels in side boxes + fixed roof panel)
-p.sol.area   = 4.5;               % (A) m^2 unfolded
+p.sol.area   = 5.5;               % m^2: 2 fold-out side panels + cab roof + bed cover
 p.sol.eta    = 0.21;              % (A) module efficiency
 p.sol.H_day  = 5.5;               % (A) kWh/m^2 per clear day (alpine summer)
 p.sol.PR     = 0.80;              % (A) performance ratio (MPPT, angle, dirt)

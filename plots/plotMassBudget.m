@@ -10,10 +10,10 @@ r  = p.veh.r_dyn;
 fig = figure('Name', 'Mass budget'); hold on; grid on; axis equal;
 
 % Ground, wheels
-plot([-0.8 L+0.8], [0 0], 'k', 'LineWidth', 1.5);
+plot([-0.8 L+0.8], [0 0], 'k', 'LineWidth', 1.5, 'HandleVisibility', 'off');
 t = linspace(0, 2*pi, 100);
 for xw = [0 L]
-    plot(xw + r*cos(t), r + r*sin(t), 'k', 'LineWidth', 1);
+    plot(xw + r*cos(t), r + r*sin(t), 'k', 'LineWidth', 1, 'HandleVisibility', 'off');
 end
 
 % Parts, coloured by group

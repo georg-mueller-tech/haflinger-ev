@@ -24,7 +24,8 @@ bp.I_cont = p.mot.P_cont / eta / bp.U_min;          % A at empty battery
 bp.I_peak = p.mot.P_peak / eta / bp.U_min;
 bp.C_cont = bp.I_cont / bp.C_Ah;
 bp.C_peak = bp.I_peak / bp.C_Ah;
-bp.I_allowed   = pk.np * c.I_cont;
+bp.I_allowed   = pk.np * c.I_cont;                  % continuous
+bp.I_allowed_pk = pk.np * c.I_peak;                 % peak, max. 30 s
 bp.P_max_empty = min(bp.I_allowed * bp.U_min * eta, p.mot.P_peak);   % W
 
 %% Boxes
@@ -46,7 +47,8 @@ bp.cost_cells = n * c.price;
 
 %% Checks
 bp.check.voltage_ok  = bp.U_max <= p.mot.U_max - 2;          % margin for regen
-bp.check.current_ok  = bp.I_peak <= bp.I_allowed;            % full motor power at 1C
+bp.check.cont_current_ok = bp.I_cont <= bp.I_allowed;       % motor continuous power at 1C
+bp.check.peak_current_ok = bp.I_peak <= bp.I_allowed_pk;    % motor peak power within 2C pulse
 bp.check.box_safe_ok = bp.box_U_max < 60;                    % touch-safe single box
 bp.check.width_ok    = bp.dim_total(2) <= p.req.width_max*1000 - 300;  % 150 mm/side frame + solar boxes
 bp.check.length_ok   = bp.dim_box(1) <= p.veh.L_batt_space*1000;
